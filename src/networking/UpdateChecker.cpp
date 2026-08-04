@@ -65,6 +65,7 @@ void UpdateChecker::checkForUpdates(bool manuallyRequested)
 
         QNetworkRequest request(apiUrl);
         request.setRawHeader("Accept", "application/json");
+        request.setRawHeader("User-Agent", "KeePassXC");
 
         m_reply = getNetMgr()->get(request);
 
@@ -75,7 +76,13 @@ void UpdateChecker::checkForUpdates(bool manuallyRequested)
 
 void UpdateChecker::fetchReadyRead()
 {
-    m_bytesReceived += m_reply->readAll();
+    // Limit response size to 1 MB to prevent memory exhaustion from malicious responses
+    static const int MAX_RESPONSE_SIZE = 1024 * 1024;
+    if (m_bytesReceived.size() < MAX_RESPONSE_SIZE) {
+        m_bytesReceived += m_reply->readAll();
+    } else {
+        m_reply->abort();
+    }
 }
 
 void UpdateChecker::fetchFinished()

@@ -146,7 +146,13 @@ void HibpDownloader::fetchReadyRead()
     const auto reply = qobject_cast<QNetworkReply*>(sender());
     auto entry = m_replies.find(reply);
     if (entry != m_replies.end()) {
-        entry->second += reply->readAll();
+        // Limit response size to 1 MB to prevent memory exhaustion from malicious responses
+        static const int MAX_RESPONSE_SIZE = 1024 * 1024;
+        if (entry->second.size() < MAX_RESPONSE_SIZE) {
+            entry->second += reply->readAll();
+        } else {
+            reply->abort();
+        }
     }
 }
 

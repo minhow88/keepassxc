@@ -163,7 +163,13 @@ void IconDownloader::fetchFavicon(const QUrl& url)
 
 void IconDownloader::fetchReadyRead()
 {
-    m_bytesReceived += m_reply->readAll();
+    // Limit response size to 5 MB to prevent memory exhaustion from malicious favicon responses
+    static const int MAX_ICON_SIZE = 5 * 1024 * 1024;
+    if (m_bytesReceived.size() < MAX_ICON_SIZE) {
+        m_bytesReceived += m_reply->readAll();
+    } else {
+        m_reply->abort();
+    }
 }
 
 void IconDownloader::fetchFinished()
