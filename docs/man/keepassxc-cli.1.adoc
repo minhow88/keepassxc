@@ -56,7 +56,7 @@ It provides the ability to query and modify the entries of a KeePass database, d
   If no attribute name is specified using the *-a* option, the password is copied.
   If multiple entries with the same name exist in different groups, only the attribute for the first one is copied.
   For copying the attribute of an entry in a specific group, the group path to the entry should be specified as well, instead of just the name.
-  Optionally, a timeout in seconds can be specified to automatically clear the clipboard, the default timeout is 10 seconds, set to 0 to disable.
+  Optionally, a timeout in seconds can be specified to automatically clear the clipboard, the default timeout is 5 seconds, set to 0 to disable.
 
 *close*::
   In interactive mode, closes the currently opened database (see *open*).
